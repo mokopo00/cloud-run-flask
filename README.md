@@ -1,4 +1,4 @@
-# Cloud RunでFlaskを使ったWebアプリを構築
+# Cloud RunでFlaskを使ったWebアプリ構築
 
 ## 概要
 このプロジェクトは、Flask を使用した Web アプリケーションを Cloud Run で実行するためのチュートリアルです。<br> 
