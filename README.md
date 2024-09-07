@@ -12,8 +12,8 @@
 Flask
 gunicorn
 ```
-- Flaskは、Pythonで書かれた軽量なWebアプリケーションフレームワークです。シンプルなAPI設計と拡張性の高さから、多くのWebアプリケーション開発に利用されています。
-- gunicornは、Python用のWSGI HTTPサーバーです。Flaskアプリケーションを本番環境で効率的に動作させるために使用します
+- Flaskは、Pythonの軽量なWebアプリケーションフレームワークです。シンプルなAPI設計と拡張性の高さから、多くのWebアプリケーション開発に利用されています。
+- gunicornは、Python用のWSGI(ウィズギー：Web Server Gateway Interface) HTTPサーバーです。Flaskアプリケーションを本番環境で効率的に動作させるために使用します.
 
 ### 2. Flask アプリの作成
 
