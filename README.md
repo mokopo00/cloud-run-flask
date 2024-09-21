@@ -1,8 +1,8 @@
 # Cloud RunでFlaskを使ったWebアプリ構築
 
 ## 概要
-このプロジェクトは、Flask を使用した Web アプリケーションを Cloud Run で実行するためのチュートリアルです。<br> 
-「Hello World!」を表示するシンプルなアプリについて解説します。
+このプロジェクトでは、Flask を使用した Web アプリケーションを Cloud Run で実行する方法を説明します。<br> 
+今回は、「Hello World!」を表示するシンプルなアプリについて解説します。
 
 ## 準備
 ### 1. ライブラリのインストール
@@ -73,7 +73,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 8080
 
 # Run main.py when the container launches
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "main:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]
 ```
 - FROM python:3.12-slimは軽量なPythonベースのDockerイメージを指定しています。
 - COPYコマンドでローカルのファイルをコンテナ内にコピーし、pip installで必要な依存ライブラリをインストールします。
@@ -82,7 +82,7 @@ CMD ["gunicorn", "--bind", "0.0.0.0:8080", "main:app"]
 ※ 注意: CMDで指定するモジュール名はapp.pyに対応するため、app:appとしています。main:appの場合は、main.pyにアプリケーションが存在する場合となります。
 
 ## ローカル環境でのアプリの動作確認
-アプリを実行するために、サービス名```xxxxx```を設定します。
+アプリを実行するために、イメージ名```xxxxx```を設定します。
 ### 1. Dockerイメージのビルド
 
 Dockerイメージとは、アプリケーションとその依存関係を含む実行可能なパッケージです。<br>
@@ -119,9 +119,10 @@ docker push gcr.io/プロジェクト名/xxxxx:1.0
 ### 3. Webアプリのデプロイ
 
 プッシュしたDockerイメージをCloud Runにデプロイします。<br>
-以下のコマンドは、リージョンをus-central1に指定してデプロイする例です。
+以下のコマンドは、リージョンをus-central1に指定してデプロイする例です。<br>
+Webアプリのサービス名をyyyyyに設定する場合は以下のように実行します。
 ```bash
-gcloud run deploy xxxxx --image gcr.io/プロジェクト名/xxxxx:1.0 --platform managed --region us-central1
+gcloud run deploy yyyyy --image gcr.io/プロジェクト名/xxxxx:1.0 --platform managed --region us-central1
 ```
 - --platform managedオプションはCloud Runのマネージド環境でデプロイするために指定します。
 
@@ -129,6 +130,33 @@ gcloud run deploy xxxxx --image gcr.io/プロジェクト名/xxxxx:1.0 --platfor
 
 ## まとめ
 この手順に従って、Flaskを使用したシンプルなWebアプリケーションをCloud Run上で動作させることができました。Cloud Runを利用することで、スケーラブルで管理の容易なコンテナベースのサービスを迅速にデプロイできます。今後は、アプリケーションに機能を追加したり、設定をカスタマイズすることで、より高度なWebサービスを構築してみてください。
+
+# （補足資料）
+## 特定のイメージをpullして、別のイメージとしてpushする方法
+### 1. イメージのpull
+まず、Container RegistryにあるDockerイメージをローカルにpullします。<br>
+```bash
+docker pull gcr.io/[PROJECT_ID]/[IMAGE_NAME]:[TAG]
+```
+
+### 2. ソースコードを取り出す
+Dockerイメージを直接エディタで編集することはできませんが、Dockerイメージからコードを抽出することで編集できます。<br>
+まずは。ローカルでイメージを実行します。
+```bash
+docker run -d --name temp-container gcr.io/[PROJECT_ID]/[IMAGE_NAME]:[TAG]
+```
+- temp-containerは、Dockerコンテナを一時的に作成・実行する際に、任意で付けたコンテナの名前です。
+
+```bash
+docker cp temp-container:/path/to/code ./local-directory
+```
+これで、別のイメージとしてソースファイルを取り出すことができました。
+
+### 3. 編集後のイメージを
+
+
+
+
 
 ## 参考資料
 - [Flask公式ドキュメント](https://msiz07-flask-docs-ja.readthedocs.io/ja/latest/)
