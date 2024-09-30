@@ -128,9 +128,6 @@ gcloud run deploy yyyyy --image gcr.io/プロジェクト名/xxxxx:1.0 --platfor
 
 デプロイが成功すると、アプリケーションのURLが表示されます。
 
-## まとめ
-この手順に従って、Flaskを使用したシンプルなWebアプリケーションをCloud Run上で動作させることができました。Cloud Runを利用することで、スケーラブルで管理の容易なコンテナベースのサービスを迅速にデプロイできます。今後は、アプリケーションに機能を追加したり、設定をカスタマイズすることで、より高度なWebサービスを構築してみてください。
-
 # （補足資料）
 ## 特定のイメージをpullして、別のイメージとしてpushする方法
 ### 1. イメージのpull
@@ -144,19 +141,41 @@ Dockerイメージを直接エディタで編集することはできません�
 まずは。ローカルでイメージを実行します。
 ```bash
 docker run -d --name temp-container gcr.io/[PROJECT_ID]/[IMAGE_NAME]:[TAG]
-```
-- temp-containerは、Dockerコンテナを一時的に作成・実行する際に、任意で付けたコンテナの名前です。
-
-```bash
 docker cp temp-container:/path/to/code ./local-directory
 ```
-これで、別のイメージとしてソースファイルを取り出すことができました。
+- temp-containerは、Dockerコンテナを一時的に作成・実行する際に、任意で付けたコンテナの名前
+- temp-container:/path/to/codeは、コンテナ内の目的のディレクトリのパス
+- temp-container:/path/to/codeは、コンテナ内の目的のディレクトリのパス
 
-### 3. 編集後のイメージを
+※ コンテナ内のどのディレクトリにコードがあるか確認したい場合
+→ 以下の手順でコンテナ内でシェルを起動して、ディレクトリ構造を確認する。
 
+#### 2-1. コンテナにアクセス
+```bash
+docker exec -it temp-container /bin/bash
+```
+#### 2-2. ルートディレクトリから探索
+```bash
+ls /
+```
 
+例えば、コンテナ内でアプリケーションコードが /app/src に保存されており、
+my-codeというディレクトリにコピーしたい場合は、以下のように指定します：
+```bash
+docker cp temp-container:/app/src /home/user name/my-code
+```
+これで、別のイメージとしてソースファイルを取り出すことができました。<br>
+エディタ画面で確認すると、指定したディレクトリにソースファイルがコピーされています。
 
+### 3. 編集後のイメージをエディタで確認後、イメージをビルドしてプッシュ
+```bash
+cd my-code
+docker build -t gcr.io/[PROJECT_ID]/[NEW_IMAGE_NAME]:[NEW_TAG] .
+docker push gcr.io/[PROJECT_ID]/[NEW_IMAGE_NAME]:[NEW_TAG]
+```
 
+## まとめ
+この手順に従って、Flaskを使用したシンプルなWebアプリケーションをCloud Run上で動作させることができました。Cloud Runを利用することで、スケーラブルで管理の容易なコンテナベースのサービスを迅速にデプロイできます。今後は、アプリケーションに機能を追加したり、設定をカスタマイズすることで、より高度なWebサービスを構築してみてください。
 
 ## 参考資料
 - [Flask公式ドキュメント](https://msiz07-flask-docs-ja.readthedocs.io/ja/latest/)
